@@ -18,6 +18,7 @@
         body {
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
+            overflow-x: hidden;
         }
 
         .serif {
@@ -30,7 +31,7 @@
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.4);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
-            border-radius: 2rem; /* Extra roundy */
+            border-radius: 2rem;
         }
 
         .hero-gradient {
@@ -39,34 +40,37 @@
             background-position: center;
         }
 
-        .product-zoom:hover img {
-            transform: scale(1.1);
-        }
-
-        /* Smooth Card Transitions */
         .luxury-card {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 2.5rem; /* Very smooth corners */
+            border-radius: 2rem;
         }
-        .luxury-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+        @media (min-width: 768px) {
+            .luxury-card { border-radius: 2.5rem; }
+            .luxury-card:hover {
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+            }
         }
 
         .floating-whatsapp {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             z-index: 1000;
             background: #25D366;
             color: white;
-            padding: 18px;
-            border-radius: 24px; /* Squircle style */
+            padding: 14px;
+            border-radius: 20px;
             box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
             transition: all 0.3s ease;
         }
-        .floating-whatsapp:hover {
-            transform: translateY(-5px) rotate(5deg);
+        @media (min-width: 768px) {
+            .floating-whatsapp {
+                bottom: 30px;
+                right: 30px;
+                padding: 18px;
+                border-radius: 24px;
+            }
         }
 
         .nav-link {
@@ -86,7 +90,6 @@
             width: 100%;
         }
 
-        /* Custom Rounded Buttons */
         .btn-roundy {
             border-radius: 9999px;
             transition: all 0.3s ease;
@@ -94,6 +97,15 @@
 
         [data-page] { display: none; }
         [data-page].active { display: block; }
+
+        /* Mobile Menu Animation */
+        #mobile-menu {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(100%);
+        }
+        #mobile-menu.open {
+            transform: translateX(0);
+        }
     </style>
 </head>
 <body class="bg-white text-neutral-900">
@@ -101,168 +113,161 @@
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-neutral-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
+            <div class="flex justify-between h-16 md:h-20 items-center">
                 <div class="flex-shrink-0 cursor-pointer" onclick="showPage('home')">
-                    <h1 class="text-2xl font-bold tracking-tighter serif text-neutral-900">PROXEN <span class="text-[#D4AF37]">GLOBAL</span></h1>
-                    <p class="text-[10px] uppercase tracking-[0.2em] font-medium text-neutral-500">Product Contact</p>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-tighter serif text-neutral-900">PROXEN <span class="text-[#D4AF37]">GLOBAL</span></h1>
+                    <p class="text-[8px] md:text-[10px] uppercase tracking-[0.2em] font-medium text-neutral-500">Official Importer</p>
                 </div>
                 
+                <!-- Desktop Links -->
                 <div class="hidden md:flex space-x-10 items-center">
                     <button onclick="showPage('home')" class="nav-link text-sm font-medium uppercase tracking-wider">Home</button>
-                    <button class="nav-link text-sm font-medium uppercase tracking-wider">About</button>
-                    <button class="nav-link text-sm font-medium uppercase tracking-wider">Menu</button>
+                    <button class="nav-link text-sm font-medium uppercase tracking-wider">Catalogue</button>
+                    <button class="nav-link text-sm font-medium uppercase tracking-wider">Bulk Order</button>
                 </div>
 
-                <div class="flex items-center space-x-4">
-                    <button class="p-2 hover:bg-neutral-100 rounded-full transition-colors"><i data-lucide="search" class="w-5 h-5"></i></button>
-                    <button class="relative p-2 hover:bg-neutral-100 rounded-full transition-colors">
+                <div class="flex items-center space-x-2 md:space-x-4">
+                    <button class="p-2 hover:bg-neutral-100 rounded-full"><i data-lucide="search" class="w-5 h-5"></i></button>
+                    <button class="relative p-2 hover:bg-neutral-100 rounded-full">
                         <i data-lucide="shopping-cart" class="w-5 h-5"></i>
                         <span class="absolute top-0 right-0 bg-[#D4AF37] text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center">0</span>
+                    </button>
+                    <!-- Mobile Menu Toggle -->
+                    <button class="md:hidden p-2 hover:bg-neutral-100 rounded-full" onclick="toggleMenu()">
+                        <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
                     </button>
                 </div>
             </div>
         </div>
     </nav>
 
+    <!-- Mobile Slide-over Menu -->
+    <div id="mobile-menu" class="fixed inset-y-0 right-0 w-full max-w-xs bg-white shadow-2xl z-[60] flex flex-col p-8 md:hidden">
+        <div class="flex justify-end mb-8">
+            <button onclick="toggleMenu()" class="p-2 bg-neutral-100 rounded-full">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+        <div class="flex flex-col space-y-6">
+            <button onclick="showPage('home'); toggleMenu();" class="text-2xl serif text-left">Home</button>
+            <button onclick="toggleMenu()" class="text-2xl serif text-left">Catalogue</button>
+            <button onclick="toggleMenu()" class="text-2xl serif text-left">Bulk Order</button>
+            <button onclick="toggleMenu()" class="text-2xl serif text-left">About Us</button>
+            <hr class="border-neutral-100">
+            <div class="pt-4">
+                <p class="text-xs uppercase tracking-widest text-neutral-400 mb-4">Contact Specialist</p>
+                <a href="tel:+" class="text-lg font-bold">+880 1XXX XXXXXX</a>
+            </div>
+        </div>
+    </div>
+    <!-- Overlay for mobile menu -->
+    <div id="menu-overlay" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[55] hidden md:hidden" onclick="toggleMenu()"></div>
+
     <!-- Page: HOME -->
     <div id="page-home" data-page class="active">
         <!-- Banner -->
-        <section class="relative h-[85vh] m-4 md:m-6 overflow-hidden rounded-[2.5rem] hero-gradient shadow-2xl">
-            <div class="absolute inset-0 bg-black/30"></div>
-            <div class="relative text-center text-white px-4 z-10 max-w-4xl mx-auto">
-                <h2 class="text-sm md:text-base uppercase tracking-[0.4em] font-medium mb-6 opacity-90">Elegance in Every Thread</h2>
-                <h3 class="text-5xl md:text-8xl serif italic mb-10 leading-tight">"Global Import from China & Pakistan"</h3>
-                <div class="flex flex-wrap justify-center gap-6 md:gap-12 mb-12 text-xs md:text-sm font-light tracking-[0.2em] uppercase">
-                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-[#D4AF37]"></i> Premium Quality</span>
-                    <span class="flex items-center gap-2"><i data-lucide="tag" class="w-4 h-4 text-[#D4AF37]"></i> Best Price</span>
-                    <span class="flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-[#D4AF37]"></i> Trusted Source</span>
+        <section class="relative h-[70vh] md:h-[85vh] m-3 md:m-6 overflow-hidden rounded-[2rem] md:rounded-[2.5rem] hero-gradient shadow-2xl flex items-center justify-center">
+            <div class="absolute inset-0 bg-black/40"></div>
+            <div class="relative text-center text-white px-6 z-10 max-w-4xl mx-auto">
+                <h2 class="text-[10px] md:text-sm uppercase tracking-[0.3em] font-medium mb-4 md:mb-6 opacity-90">Premium Pakistani Collection</h2>
+                <h3 class="text-3xl md:text-8xl serif italic mb-6 md:mb-10 leading-tight">Import from China & Pakistan</h3>
+                <div class="hidden sm:flex flex-wrap justify-center gap-6 md:gap-12 mb-12 text-xs md:text-sm font-light tracking-[0.2em] uppercase">
+                    <span class="flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4 text-[#D4AF37]"></i> Chiffon Dupatta</span>
+                    <span class="flex items-center gap-2"><i data-lucide="tag" class="w-4 h-4 text-[#D4AF37]"></i> Factory Price</span>
+                    <span class="flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-[#D4AF37]"></i> Unstitched 3pc</span>
                 </div>
-                <div class="flex flex-col sm:flex-row justify-center gap-6">
-                    <button class="btn-roundy px-12 py-5 bg-[#D4AF37] hover:bg-[#b8952c] text-white font-semibold shadow-lg hover:shadow-[#D4AF37]/30">Explore Product</button>
-                    <button class="btn-roundy px-12 py-5 backdrop-blur-md bg-white/10 border border-white/30 hover:bg-white hover:text-black font-semibold transition-all">Contact Now</button>
+                <div class="flex flex-col sm:flex-row justify-center gap-4 md:gap-6">
+                    <button class="btn-roundy px-8 md:px-12 py-4 md:py-5 bg-[#D4AF37] hover:bg-[#b8952c] text-white font-semibold shadow-lg text-sm">Explore Collection</button>
+                    <button class="btn-roundy px-8 md:px-12 py-4 md:py-5 backdrop-blur-md bg-white/10 border border-white/30 hover:bg-white hover:text-black font-semibold transition-all text-sm">Wholesale Inquiry</button>
                 </div>
             </div>
         </section>
 
-        <!-- Our Categories -->
-        <section class="max-w-7xl mx-auto px-4 py-32">
-            <div class="flex flex-col items-center text-center mb-16">
-                <div class="w-12 h-1 bg-[#D4AF37] rounded-full mb-6"></div>
-                <h2 class="text-4xl serif tracking-tight">Our Categories</h2>
-                <p class="text-neutral-500 mt-2 italic">Handpicked luxury selection for your business</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <!-- Categories / Mosaic -->
+        <section class="max-w-7xl mx-auto px-4 py-16 md:py-32">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
                 <!-- Women Fashion -->
-                <div class="group relative h-[500px] overflow-hidden luxury-card cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=800" alt="Women Fashion" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                    <div class="absolute bottom-10 left-10 text-white">
-                        <p class="text-xs uppercase tracking-widest mb-3 text-[#D4AF37] font-bold">New Arrival</p>
-                        <h4 class="text-3xl serif">Women Fashion</h4>
+                <div class="group relative h-[300px] md:h-[500px] overflow-hidden luxury-card cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=800" alt="Women Fashion" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white">
+                        <p class="text-[10px] uppercase tracking-widest mb-2 text-[#D4AF37] font-bold">New Arrival</p>
+                        <h4 class="text-2xl md:text-3xl serif">Women Fashion</h4>
                     </div>
                 </div>
                 <!-- Men Fashion -->
-                <div class="group relative h-[500px] overflow-hidden luxury-card cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800" alt="Men Fashion" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                    <div class="absolute bottom-10 left-10 text-white">
-                        <p class="text-xs uppercase tracking-widest mb-3 text-[#D4AF37] font-bold">Wholesale Only</p>
-                        <h4 class="text-3xl serif">Men Fashion</h4>
+                <div class="group relative h-[300px] md:h-[500px] overflow-hidden luxury-card cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=800" alt="Men Fashion" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white">
+                        <p class="text-[10px] uppercase tracking-widest mb-2 text-[#D4AF37] font-bold">Wholesale</p>
+                        <h4 class="text-2xl md:text-3xl serif">Men Fashion</h4>
                     </div>
                 </div>
                 <!-- Electronics -->
-                <div class="group relative h-[500px] overflow-hidden luxury-card cursor-pointer">
-                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&q=80&w=800" alt="Electronics" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-                    <div class="absolute bottom-10 left-10 text-white">
-                        <p class="text-xs uppercase tracking-widest mb-3 text-[#D4AF37] font-bold">Imported</p>
-                        <h4 class="text-3xl serif">Electronics</h4>
+                <div class="group relative h-[300px] md:h-[500px] overflow-hidden luxury-card cursor-pointer">
+                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&q=80&w=800" alt="Electronics" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 md:bottom-10 md:left-10 text-white">
+                        <p class="text-[10px] uppercase tracking-widest mb-2 text-[#D4AF37] font-bold">Imported</p>
+                        <h4 class="text-2xl md:text-3xl serif">Electronics</h4>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Featured Products (Glass Effect) -->
-        <section class="bg-neutral-50 py-32">
-            <div class="max-w-7xl mx-auto px-4">
-                <div class="flex justify-between items-end mb-16">
-                    <div>
-                        <h2 class="text-4xl serif tracking-tight">Featured Products</h2>
-                        <p class="text-neutral-500 mt-2 italic">Premium glass-finished showcases</p>
-                    </div>
-                    <button class="text-sm font-bold uppercase tracking-widest text-[#D4AF37] hover:underline">View All</button>
-                </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
-                    <!-- Product 1 -->
-                    <div class="glass-card overflow-hidden p-5 group cursor-pointer" onclick="showProduct('Embroidered Lawn Suit')">
-                        <div class="aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-8">
-                            <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&q=80&w=800" alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        </div>
-                        <div class="px-2 pb-2">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="text-xl serif font-bold">Embroidered Lawn Suit</h4>
-                                <span class="bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-bold px-2 py-1 rounded-full">HOT</span>
-                            </div>
-                            <p class="text-[#D4AF37] font-bold text-xl mb-6">৳ 3,450.00</p>
-                            <button class="w-full py-4 bg-neutral-900 text-white font-bold text-xs tracking-widest btn-roundy hover:bg-[#D4AF37] shadow-xl hover:shadow-[#D4AF37]/20">BUY NOW</button>
-                        </div>
-                    </div>
-                    <!-- Product 2 -->
-                    <div class="glass-card overflow-hidden p-5 group cursor-pointer" onclick="showProduct('Premium Linen Kurta')">
-                        <div class="aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-8">
-                            <img src="https://images.unsplash.com/photo-1594932224440-754752204a0c?auto=format&fit=crop&q=80&w=800" alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        </div>
-                        <div class="px-2 pb-2">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="text-xl serif font-bold">Premium Linen Kurta</h4>
-                                <span class="bg-blue-100 text-blue-600 text-[10px] font-bold px-2 py-1 rounded-full">NEW</span>
-                            </div>
-                            <p class="text-[#D4AF37] font-bold text-xl mb-6">৳ 2,100.00</p>
-                            <button class="w-full py-4 bg-neutral-900 text-white font-bold text-xs tracking-widest btn-roundy hover:bg-[#D4AF37] shadow-xl hover:shadow-[#D4AF37]/20">BUY NOW</button>
-                        </div>
-                    </div>
-                    <!-- Product 3 -->
-                    <div class="glass-card overflow-hidden p-5 group cursor-pointer" onclick="showProduct('Traditional Silk Drape')">
-                        <div class="aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-8">
-                            <img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=80&w=800" alt="Product" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        </div>
-                        <div class="px-2 pb-2">
-                            <div class="flex justify-between items-start mb-2">
-                                <h4 class="text-xl serif font-bold">Traditional Silk Drape</h4>
-                                <span class="bg-purple-100 text-purple-600 text-[10px] font-bold px-2 py-1 rounded-full">SILK</span>
-                            </div>
-                            <p class="text-[#D4AF37] font-bold text-xl mb-6">৳ 5,800.00</p>
-                            <button class="w-full py-4 bg-neutral-900 text-white font-bold text-xs tracking-widest btn-roundy hover:bg-[#D4AF37] shadow-xl hover:shadow-[#D4AF37]/20">BUY NOW</button>
-                        </div>
-                    </div>
-                </div>
+        <!-- Featured Products -->
+        <section class="max-w-7xl mx-auto px-4 py-12 md:py-32">
+            <div class="flex flex-col items-center text-center mb-12 md:mb-20">
+                <div class="w-12 h-1 bg-[#D4AF37] rounded-full mb-6"></div>
+                <h2 class="text-3xl md:text-4xl serif tracking-tight">Latest BIC-4711 Collection</h2>
+                <p class="text-neutral-500 mt-2 text-sm italic">Premium 3PC Lawn suits with organza details</p>
             </div>
-        </section>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+                <!-- Product 1 -->
+                <div class="glass-card overflow-hidden p-4 md:p-5 group cursor-pointer" onclick="showProduct('3PC Lawn Embroidered BIC-4711 - Emerald')">
+                    <div class="aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-6 md:mb-8">
+                        <img src="WhatsApp Image 2026-04-26 at 10.49.10 AM.jpeg" alt="Emerald Green Suit" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="px-2">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-base md:text-lg serif font-bold leading-tight">Emerald Lawn 3PC</h4>
+                            <span class="bg-[#D4AF37]/10 text-[#D4AF37] text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full">PREMIUM</span>
+                        </div>
+                        <p class="text-[#D4AF37] font-bold text-lg md:text-xl mb-4 md:mb-6">৳ 4,250.00</p>
+                        <button class="w-full py-3 md:py-4 bg-neutral-900 text-white font-bold text-[10px] tracking-widest btn-roundy hover:bg-[#D4AF37]">VIEW DETAILS</button>
+                    </div>
+                </div>
 
-        <!-- Why Choose Proxen -->
-        <section class="max-w-7xl mx-auto px-4 py-32">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
-                <div class="group flex flex-col items-center text-center">
-                    <div class="w-20 h-20 bg-[#D4AF37]/10 rounded-[2rem] flex items-center justify-center mb-8 text-[#D4AF37] group-hover:rotate-6 transition-transform">
-                        <i data-lucide="package-check" class="w-10 h-10"></i>
+                <!-- Product 2 -->
+                <div class="glass-card overflow-hidden p-4 md:p-5 group cursor-pointer" onclick="showProduct('3PC Lawn Embroidered BIC-4711 - Crimson')">
+                    <div class="aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-6 md:mb-8">
+                        <img src="WhatsApp Image 2026-04-26 at 10.49.11 AM.jpeg" alt="Crimson Suit" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <h3 class="text-xl font-bold mb-4 serif italic">Direct Factory Import</h3>
-                    <p class="text-neutral-500 text-sm leading-relaxed max-w-xs">Bypassing middleman costs to provide authentic source pricing from China and Pakistan factories.</p>
+                    <div class="px-2">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-base md:text-lg serif font-bold leading-tight">Crimson Chiffon 3PC</h4>
+                            <span class="bg-red-50 text-red-600 text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-widest">Best Seller</span>
+                        </div>
+                        <p class="text-[#D4AF37] font-bold text-lg md:text-xl mb-4 md:mb-6">৳ 4,250.00</p>
+                        <button class="w-full py-3 md:py-4 bg-neutral-900 text-white font-bold text-[10px] tracking-widest btn-roundy hover:bg-[#D4AF37]">VIEW DETAILS</button>
+                    </div>
                 </div>
-                <div class="group flex flex-col items-center text-center">
-                    <div class="w-20 h-20 bg-neutral-900 rounded-[2rem] flex items-center justify-center mb-8 text-white group-hover:-rotate-6 transition-transform">
-                        <i data-lucide="shield-check" class="w-10 h-10"></i>
+
+                <!-- Product 3 -->
+                <div class="glass-card overflow-hidden p-4 md:p-5 group cursor-pointer" onclick="showProduct('3PC Lawn Embroidered BIC-4711 - Sapphire')">
+                    <div class="aspect-[4/5] rounded-[1.5rem] overflow-hidden mb-6 md:mb-8">
+                        <img src="WhatsApp Image 2026-04-26 at 10.49.12 AM.jpeg" alt="Sapphire Suit" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     </div>
-                    <h3 class="text-xl font-bold mb-4 serif italic">Premium Quality Check</h3>
-                    <p class="text-neutral-500 text-sm leading-relaxed max-w-xs">Every batch undergoes rigorous quality control to ensure elite fabric standards for your clients.</p>
-                </div>
-                <div class="group flex flex-col items-center text-center">
-                    <div class="w-20 h-20 bg-[#D4AF37]/10 rounded-[2rem] flex items-center justify-center mb-8 text-[#D4AF37] group-hover:rotate-6 transition-transform">
-                        <i data-lucide="truck" class="w-10 h-10"></i>
+                    <div class="px-2">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-base md:text-lg serif font-bold leading-tight">Sapphire Sequin 3PC</h4>
+                            <span class="bg-blue-50 text-blue-600 text-[8px] md:text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-widest">New</span>
+                        </div>
+                        <p class="text-[#D4AF37] font-bold text-lg md:text-xl mb-4 md:mb-6">৳ 4,250.00</p>
+                        <button class="w-full py-3 md:py-4 bg-neutral-900 text-white font-bold text-[10px] tracking-widest btn-roundy hover:bg-[#D4AF37]">VIEW DETAILS</button>
                     </div>
-                    <h3 class="text-xl font-bold mb-4 serif italic">Fast Delivery in BD</h3>
-                    <p class="text-neutral-500 text-sm leading-relaxed max-w-xs">Optimized supply chain providing the fastest turnaround time for bulk orders in Bangladesh.</p>
                 </div>
             </div>
         </section>
@@ -270,53 +275,45 @@
 
     <!-- Page: PRODUCT DETAIL -->
     <div id="page-product" data-page>
-        <section class="max-w-7xl mx-auto px-4 py-16">
-            <button onclick="showPage('home')" class="mb-12 flex items-center gap-3 text-neutral-500 hover:text-black transition-all bg-neutral-100 px-6 py-3 rounded-full font-medium">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Collection
+        <section class="max-w-7xl mx-auto px-4 py-8 md:py-16">
+            <button onclick="showPage('home')" class="mb-8 md:mb-12 flex items-center gap-2 text-neutral-500 hover:text-black transition-all bg-neutral-100 px-5 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-medium w-fit">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back
             </button>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
-                <!-- Product Image with Zoom -->
-                <div class="product-zoom overflow-hidden rounded-[3rem] bg-neutral-50 border border-neutral-100 shadow-xl">
-                    <img id="detail-image" src="" alt="Product" class="w-full h-auto transition-transform duration-700 cursor-zoom-in">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-start">
+                <!-- Gallery Grid -->
+                <div class="grid grid-cols-2 gap-3 md:gap-4">
+                    <div class="col-span-2 overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl">
+                        <img id="detail-image" src="" alt="Main View" class="w-full h-auto object-cover">
+                    </div>
+                    <div class="rounded-[1rem] md:rounded-[1.5rem] overflow-hidden"><img id="thumb1" src="" class="w-full h-full object-cover"></div>
+                    <div class="rounded-[1rem] md:rounded-[1.5rem] overflow-hidden"><img id="thumb2" src="" class="w-full h-full object-cover"></div>
                 </div>
                 
-                <!-- Details -->
+                <!-- Detailed Specs -->
                 <div class="flex flex-col">
-                    <span class="text-[#D4AF37] font-bold text-xs tracking-[0.3em] uppercase mb-4">Official Import</span>
-                    <h2 id="detail-name" class="text-5xl serif mb-6 leading-tight"></h2>
-                    <div class="flex items-center gap-6 mb-10">
-                        <span id="detail-price" class="text-4xl text-neutral-900 font-bold"></span>
-                        <div class="h-8 w-px bg-neutral-200"></div>
-                        <div class="flex items-center gap-2">
-                            <div class="flex text-yellow-400">
-                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
-                            </div>
-                            <span class="text-neutral-400 text-xs font-medium uppercase tracking-widest">(2.5k Sold)</span>
-                        </div>
-                    </div>
+                    <span class="text-[#D4AF37] font-bold text-[10px] tracking-[0.3em] uppercase mb-2 md:mb-4">Code: BIC-4711</span>
+                    <h2 id="detail-name" class="text-3xl md:text-5xl serif mb-4 md:mb-6 leading-tight"></h2>
+                    <p class="text-2xl md:text-3xl text-neutral-900 font-bold mb-8 md:mb-10" id="detail-price"></p>
                     
-                    <div class="p-8 bg-neutral-50 rounded-[2rem] border border-neutral-100 mb-10">
-                        <p class="text-neutral-600 leading-relaxed italic mb-6">
-                            "This exclusive batch was hand-sourced for boutique businesses seeking high-end Pakistani craftsmanship."
-                        </p>
-                        <div class="grid grid-cols-2 gap-4 text-xs font-bold uppercase tracking-widest text-neutral-400">
-                            <div class="flex items-center gap-2"><i data-lucide="droplet" class="w-4 h-4"></i> 100% Organic</div>
-                            <div class="flex items-center gap-2"><i data-lucide="award" class="w-4 h-4"></i> Premium Grade</div>
-                        </div>
+                    <div class="bg-neutral-50 rounded-[1.5rem] md:rounded-[2rem] p-6 md:p-8 mb-8 md:mb-10 border border-neutral-100">
+                        <h4 class="text-[10px] md:text-xs font-bold uppercase tracking-widest mb-4 md:mb-6 border-b border-neutral-200 pb-4">Suit Composition</h4>
+                        <ul class="space-y-3 md:space-y-4 text-xs md:text-sm text-neutral-700">
+                            <li class="flex justify-between"><span>Shirt:</span> <span class="font-semibold text-right">Lawn Embroidered</span></li>
+                            <li class="flex justify-between"><span>Neckline:</span> <span class="font-semibold text-right text-[#D4AF37]">Sequin Heavy</span></li>
+                            <li class="flex justify-between"><span>Daman:</span> <span class="font-semibold text-right">Organza Embroidered</span></li>
+                            <li class="flex justify-between"><span>Dupatta:</span> <span class="font-semibold text-right">Chiffon Printed Emb</span></li>
+                            <li class="flex justify-between"><span>Type:</span> <span class="font-semibold text-right">Unstitched 3pc</span></li>
+                        </ul>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row gap-5">
-                        <button class="flex-1 btn-roundy px-10 py-6 bg-neutral-900 text-white font-bold hover:bg-black flex items-center justify-center gap-3 shadow-2xl">
-                            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                            ADD TO CART
+                    <div class="flex flex-col gap-3 md:gap-4">
+                        <button class="btn-roundy py-5 md:py-6 bg-neutral-900 text-white font-bold text-sm hover:bg-black flex items-center justify-center gap-3">
+                            <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                            ADD TO BULK CART
                         </button>
-                        <button class="flex-1 btn-roundy px-10 py-6 border-2 border-[#25D366] text-[#25D366] font-bold hover:bg-[#25D366] hover:text-white flex items-center justify-center gap-3 transition-all">
+                        <button class="btn-roundy py-5 md:py-6 border-2 border-[#25D366] text-[#25D366] font-bold text-sm hover:bg-[#25D366] hover:text-white flex items-center justify-center gap-3">
                             <i data-lucide="message-circle" class="w-5 h-5"></i>
-                            WHATSAPP ORDER
+                            ORDER VIA WHATSAPP
                         </button>
                     </div>
                 </div>
@@ -325,102 +322,89 @@
     </div>
 
     <!-- Floating Contact -->
-    <a href="https://wa.me/yournumber" target="_blank" class="floating-whatsapp flex items-center gap-3 pr-6">
-        <i data-lucide="message-circle" class="w-7 h-7"></i>
-        <span class="text-sm font-bold uppercase tracking-widest hidden md:block">Chat with us</span>
+    <a href="https://wa.me/yournumber" target="_blank" class="floating-whatsapp flex items-center gap-3 pr-4 md:pr-6">
+        <i data-lucide="message-circle" class="w-6 h-6 md:w-7 md:h-7"></i>
+        <span class="text-[10px] md:text-sm font-bold uppercase tracking-widest hidden sm:block">Wholesale Chat</span>
     </a>
 
     <!-- Footer -->
-    <footer class="bg-neutral-900 text-white pt-24 pb-12 m-4 md:m-6 rounded-[3rem] overflow-hidden">
-        <div class="max-w-7xl mx-auto px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
-                <div class="col-span-1 md:col-span-1">
-                    <h4 class="text-2xl serif italic text-[#D4AF37] mb-8">Proxen Global LTD</h4>
-                    <p class="text-neutral-500 text-sm leading-relaxed mb-8">Elite bulk importers bridging the gap between Global Factories and Bangladeshi Businesses.</p>
-                    <div class="flex gap-4">
-                        <a href="#" class="w-10 h-10 rounded-full border border-neutral-700 flex items-center justify-center hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all"><i data-lucide="facebook" class="w-4 h-4"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full border border-neutral-700 flex items-center justify-center hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all"><i data-lucide="instagram" class="w-4 h-4 text-pink-500"></i></a>
-                    </div>
+    <footer class="bg-neutral-900 text-white pt-16 md:pt-24 pb-8 md:pb-12 m-3 md:m-6 rounded-[2rem] md:rounded-[3rem] overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 md:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-16 mb-16">
+                <div class="col-span-1">
+                    <h4 class="text-xl md:text-2xl serif italic text-[#D4AF37] mb-6">Proxen Global</h4>
+                    <p class="text-neutral-500 text-xs md:text-sm leading-relaxed mb-6">Official importers of Premium Lawn Collections. Direct factory access for Bangladeshi businesses.</p>
                 </div>
-                <div>
-                    <h5 class="text-[10px] uppercase tracking-[0.3em] font-bold mb-10 text-neutral-400">Services</h5>
-                    <ul class="space-y-6 text-sm">
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition-colors">Wholesale Inquiry</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition-colors">Custom Import</a></li>
-                        <li><a href="#" class="text-neutral-400 hover:text-white transition-colors">Quality Control</a></li>
+                <div class="hidden md:block">
+                    <h5 class="text-[10px] uppercase tracking-[0.3em] font-bold mb-8 text-neutral-400">Catalogue</h5>
+                    <ul class="space-y-4 text-sm text-neutral-400">
+                        <li>Lawn Collection</li>
+                        <li>Chiffon Series</li>
+                        <li>Unstitched Suits</li>
                     </ul>
                 </div>
-                <div>
-                    <h5 class="text-[10px] uppercase tracking-[0.3em] font-bold mb-10 text-neutral-400">Quick Links</h5>
-                    <ul class="space-y-6 text-sm text-neutral-400">
-                        <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Track Order</a></li>
-                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
-                    </ul>
-                </div>
-                <div class="bg-neutral-800/50 p-8 rounded-[2rem] border border-neutral-700">
-                    <h5 class="text-xs uppercase tracking-widest font-bold mb-6 text-white text-center">Business Hours</h5>
-                    <p class="text-center text-neutral-400 text-sm mb-8 italic">Mon - Sat: 10:00 AM - 8:00 PM</p>
-                    <button class="w-full py-4 btn-roundy bg-[#D4AF37] text-white text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">
-                        WhatsApp Now
+                <div class="bg-neutral-800/50 p-6 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border border-neutral-700 col-span-1 md:col-span-2">
+                    <p class="text-center text-neutral-400 text-xs mb-6 uppercase tracking-widest">Wholesale Membership</p>
+                    <button class="w-full py-4 btn-roundy bg-[#D4AF37] text-white text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-black">
+                        Apply For Business Account
                     </button>
                 </div>
             </div>
-            <div class="border-t border-neutral-800 pt-12 flex flex-col md:flex-row justify-between items-center gap-8">
-                <p class="text-neutral-600 text-[9px] uppercase tracking-[0.3em]">© 2024 Proxen Global Ltd • Premium Wholesale Importers</p>
-                <div class="flex items-center gap-6 opacity-40 hover:opacity-80 transition-opacity">
-                    <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" class="h-5">
-                    <img src="https://img.icons8.com/color/48/mastercard.png" alt="Mastercard" class="h-5">
-                    <img src="https://img.icons8.com/color/48/amex.png" alt="Amex" class="h-5">
-                </div>
-            </div>
+            <p class="text-center text-neutral-600 text-[8px] md:text-[9px] uppercase tracking-[0.3em]">© 2024 Proxen Global Ltd • Premium Wholesale Importers</p>
         </div>
     </footer>
 
     <script>
         lucide.createIcons();
 
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('menu-overlay');
+            const isOpen = menu.classList.toggle('open');
+            overlay.classList.toggle('hidden', !isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
+
         function showPage(pageId) {
-            document.querySelectorAll('[data-page]').forEach(page => {
-                page.classList.remove('active');
-            });
+            document.querySelectorAll('[data-page]').forEach(page => page.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
             window.scrollTo(0, 0);
         }
 
         function showProduct(name) {
-            const prices = {
-                'Embroidered Lawn Suit': '৳ 3,450.00',
-                'Premium Linen Kurta': '৳ 2,100.00',
-                'Traditional Silk Drape': '৳ 5,800.00'
-            };
-            const images = {
-                'Embroidered Lawn Suit': 'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&q=80&w=800',
-                'Premium Linen Kurta': 'https://images.unsplash.com/photo-1594932224440-754752204a0c?auto=format&fit=crop&q=80&w=800',
-                'Traditional Silk Drape': 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&q=80&w=800'
+            const productData = {
+                '3PC Lawn Embroidered BIC-4711 - Emerald': {
+                    price: '৳ 4,250.00',
+                    img: 'WhatsApp Image 2026-04-26 at 10.49.10 AM.jpeg',
+                    t1: 'WhatsApp Image 2026-04-26 at 10.49.13 AM.jpeg',
+                    t2: 'WhatsApp Image 2026-04-26 at 10.49.14 AM (2).jpeg'
+                },
+                '3PC Lawn Embroidered BIC-4711 - Crimson': {
+                    price: '৳ 4,250.00',
+                    img: 'WhatsApp Image 2026-04-26 at 10.49.11 AM.jpeg',
+                    t1: 'WhatsApp Image 2026-04-26 at 10.49.15 AM.jpeg',
+                    t2: 'WhatsApp Image 2026-04-26 at 10.49.16 AM.jpeg'
+                },
+                '3PC Lawn Embroidered BIC-4711 - Sapphire': {
+                    price: '৳ 4,250.00',
+                    img: 'WhatsApp Image 2026-04-26 at 10.49.12 AM.jpeg',
+                    t1: 'WhatsApp Image 2026-04-26 at 10.49.17 AM.jpeg',
+                    t2: 'WhatsApp Image 2026-04-26 at 10.49.12 AM (1).jpeg'
+                }
             };
 
+            const data = productData[name];
+            if (!data) return;
+            
             document.getElementById('detail-name').innerText = name;
-            document.getElementById('detail-price').innerText = prices[name] || '৳ 0.00';
-            document.getElementById('detail-image').src = images[name];
+            document.getElementById('detail-price').innerText = data.price;
+            document.getElementById('detail-image').src = data.img;
+            document.getElementById('thumb1').src = data.t1;
+            document.getElementById('thumb2').src = data.t2;
             
             showPage('product');
-            // Re-init icons for the new page
             lucide.createIcons();
         }
-
-        // Smooth Zoom Effect
-        const img = document.getElementById('detail-image');
-        img.addEventListener('mousemove', (e) => {
-            const { left, top, width, height } = img.getBoundingClientRect();
-            const x = ((e.clientX - left) / width) * 100;
-            const y = ((e.clientY - top) / height) * 100;
-            img.style.transformOrigin = `${x}% ${y}%`;
-        });
-        
-        img.addEventListener('mouseleave', () => {
-            img.style.transformOrigin = 'center center';
-        });
     </script>
 </body>
 </html>
